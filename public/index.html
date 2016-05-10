@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>POC for Node File Encryption</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<style> .leftsp {margin-left:5px;} </style>
+</head>
+<body style="background:#7a714d;">
+	
+	<div class="panel panel-default" style="margin:20px;">
+	  <div class="panel-heading">
+		<strong>Upload and encrypt your file</strong>
+	  </div>
+	  <div class="panel-body">
+		<form id="fileUpload" enctype="multipart/formdata">
+		  
+		  <div class="form-group">
+			<label for="ekey">Encryption key</label>
+			<input type="text" class="form-control" id="ekey" name="ekey">
+			<p class="help-block">This key will serve as a password to decrypt the file when downloading.</p>
+		  </div>
+		  
+		  <div class="form-group">
+			<label for="ealgo">Encryption algorithm</label>
+			<select class="form-control" name="ealgo" id="ealgo">
+			  <option value="">Select</option>
+			</select>
+		  </div>
+		  
+		  <div class="form-group">
+			<label for="exampleInputFile">Select File</label>
+			<input type="file" id="inputFile" name="inputFile">
+		  </div>
+		  
+		  <div class="alert alert-warning alert-dismissible" role="alert" style="display:none;" id="errormsg">
+			  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		  </div>
+		  
+		  <div class="alert alert-success alert-dismissible" role="alert" style="display:none;" id="successmsg">
+			  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		  </div>
+		  
+		  <button type="submit" class="btn btn-default" id="submitbtn">Submit</button>
+		</form>
+	  </div>
+	</div>
+	
+	<div class="panel panel-default" style="margin:20px;">
+	  <div class="panel-heading">
+		<strong>Encrypted File List</strong>
+	  </div>
+	  <div class="panel-body">
+		<table class="table table-hover table-bordered" id="fileList">
+		<thead>
+			<tr>
+			  <th>File Name</th>
+			  <th>Actions</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<tr><td colspan="2" style="text-align:center;color:red;"><b>No Files Found</b></td></tr>
+		</tbody>
+	  </table>
+	  </div>
+	</div>
+
+	
+
+</body>
+<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+<script src="javascripts/script.js"></script>
+</html>
