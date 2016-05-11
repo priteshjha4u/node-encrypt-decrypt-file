@@ -70,14 +70,16 @@ $(document).ready(function() {
 			type: 'GET',
 			success: function (result) {
 				if(result && result.status == "success") {
-					var html = '<tr><td colspan="2" style="text-align:center;color:red;"><b>No Files Found</b></td></tr>';
+					var html = '';
 					if(result.data && result.data.length) {
-						$.each(result.data.split("@"), function(a,b) {
-							var f = b.split("__")[3].split(".").slice(0,2).join(".");
-							html = '<tr><td>'+f+'</td><td><button class="btn btn-primary" data-file="'+b+'">Decrypt and Download</button><button class="btn btn-danger leftsp" data-file-del="'+b+'">Delete</button></td></tr>';
+						$.each(result.data.split("@@"), function(a,b) {
+							var f = b.split("__")[4].split(".").slice(0,2).join(".");
+							html += '<tr><td>'+f+'</td><td><button class="btn btn-primary" data-file="'+b+'">Decrypt and Download</button><button class="btn btn-danger leftsp" data-file-del="'+b+'">Delete</button></td></tr>';
 						});
+						$("#fileList").find("tbody").html(html);
+					} else {
+						$("#fileList").find("tbody").html('<tr><td colspan="2" style="text-align:center;color:red;"><b>No Files Found</b></td></tr>');
 					}
-					$("#fileList").find("tbody").html(html);
 				} else {
 					alert(result.message);
 				}
@@ -91,7 +93,7 @@ $(document).ready(function() {
 	
 	$(document).on("click", "button[data-file]", function() {
 		var b = $(this), v = b.attr('data-file');
-		var html = '<form class="form-inline downloadForm" method="post" action="/upload/downloadFile"><div class="form-group"><label for="key"'+v+'>Enter Key : </label><input type="text" class="form-control" id="key"'+v+' name="key"'+v+'></div><input type="hidden" name="file" value="'+v+'"><button type="submit" class="btn btn-default leftsp">Submit</button><a href="javascript:void(0);" class="btn btn-default canceldownload leftsp" id="'+v+'">Cancel</a></form>';
+		var html = '<form class="form-inline downloadForm" method="post" action="/upload/downloadFile"><div class="form-group"><label for="key_'+v.split("__")[3]+'">Enter Key : </label><input type="text" class="form-control" id="key_'+v.split("__")[3]+'" name="key"></div><input type="hidden" name="file" value="'+v+'"><button type="submit" class="btn btn-default leftsp">Submit</button><a href="javascript:void(0);" class="btn btn-default canceldownload leftsp" id="'+v+'">Cancel</a></form>';
 		b.next().remove().end().replaceWith(html);
 	});
 	
@@ -124,7 +126,7 @@ $(document).ready(function() {
 	
 	$(document).on("click", "button[data-file-del]", function() {
 		var v = $(this).attr("data-file-del");
-		if(confirm('Are you sure to delete this file "' + v.split("__")[3].split(".").slice(0,2).join(".") + '"')) {
+		if(confirm('Are you sure to delete this file "' + v.split("__")[4].split(".").slice(0,2).join(".") + '"')) {
 			$.post("/upload/deleteFile", {filename:v} ).done(function(result) {
 				if(result && result.status == "success") {
 					$("#fileList").parent().prepend('<div class="alert alert-success" role="alert" id="smG"><b>File deleted successfully<b></div>');

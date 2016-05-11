@@ -32,7 +32,7 @@ router.get('/getUploadedFiles', function(req, res, next) {
 			return false;
 		}
 		files.splice(files.indexOf("tmp"), 1);
-		res.json({status:"success", data: files.length ? files.join("@") : ""});
+		res.json({status:"success", data: files.length ? files.join("@@") : ""});
 	});
 });
 
@@ -47,9 +47,10 @@ router.post('/uploadFile', upload.single('inputFile'), function(req, res, next) 
 		res.json({status:"error",message:"Encryption key is required."});
 		return false;
 	}
-	var _key = new Buffer(key).toString('base64');
-	var target_path = 'uploads/' + "__" + _key + "__" + Date.now() + "__" + fname + ".enc";
-	var cipher = crypto.createCipher('aes-256-cbc', key);
+	var algo = req.body.ealgo || 'aes-256-cbc';
+	var _key = new Buffer(key).toString('base64'), _algo = new Buffer(algo).toString('base64');
+	var target_path = 'uploads/' + "__" + _key + "__" + _algo + "__" + Date.now() + "__" + fname + ".enc";
+	var cipher = crypto.createCipher(algo, key);
 	var src = fs.createReadStream(tmp_path);
 	var dest = fs.createWriteStream(target_path);
 	src.pipe(cipher).pipe(dest);
@@ -79,8 +80,9 @@ router.post('/downloadFile', function(req, res, next) {
 		return false;
 	}
 	var _file = "uploads/"+file;
-	var target_path = 'uploads/' + file.split("__")[3].split(".").slice(0,2).join(".");
-	var decipher = crypto.createDecipher('aes-256-cbc', key);
+	var algo = new Buffer(file.split("__")[2], 'base64').toString('ascii');
+	var target_path = 'uploads/' + file.split("__")[4].split(".").slice(0,2).join(".");
+	var decipher = crypto.createDecipher(algo, key);
 	var src = fs.createReadStream(_file);
 	var dest = fs.createWriteStream(target_path);
 	src.pipe(decipher).pipe(dest);
@@ -90,7 +92,7 @@ router.post('/downloadFile', function(req, res, next) {
 		return false;
 	});
 	dest.on("finish", function() {
-		res.download(target_path, file.split("__")[3].split(".").slice(0,2).join("."), function(err){
+		res.download(target_path, file.split("__")[4].split(".").slice(0,2).join("."), function(err){
 			if (err) {
 			console.log(err);
 			} else {
