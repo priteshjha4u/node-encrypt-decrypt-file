@@ -71,12 +71,12 @@ router.post('/downloadFile', function(req, res, next) {
 	var key = req.body.key || null;
 	var file = req.body.file || null;
 	if(!key || !file) {
-		res.redirect('/');
+		res.redirect('/#'+encodeURIComponent("Either encryption or file is not provided"));
 		return false;
 	}
 	var _key = file.split("__")[1];
 	if(new Buffer(_key, 'base64').toString('ascii') != key) {
-		res.redirect('/#invalidKey');
+		res.redirect('/#'+encodeURIComponent("Incorrect encryption key provided."));
 		return false;
 	}
 	var _file = "uploads/"+file;

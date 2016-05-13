@@ -114,8 +114,8 @@ $(document).ready(function() {
 		}
 	});
 	
-	if(location.hash && location.hash == "#invalidKey") {
-		$("#fileList").parent().prepend('<div class="alert alert-danger" role="alert" id="invalidKey"><b>Incorrect encryption key provided. Please try again.<b></div>');
+	if(location.hash.length) {
+		$("#fileList").parent().prepend('<div class="alert alert-danger" role="alert" id="invalidKey"><b>'+decodeURIComponent(location.hash).substr(1)+'<b></div>');
 		location.hash = "";
 		setTimeout(function() {
 			if($("#invalidKey").length) {
